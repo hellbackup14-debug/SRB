@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowUpRight, Wrench, ShieldAlert, Zap, Phone, MapPin, Clock, ChevronRight } from 'lucide-react';
 
-const Nav = () => (
+const Nav = React.memo(() => (
   <nav className="fixed w-full z-50 mix-blend-difference top-0 left-0 p-4 md:p-6 flex justify-between items-center text-[var(--color-brand-white)] border-b border-[var(--color-brand-white)]/20">
     <div className="font-[var(--font-display)] text-2xl md:text-3xl font-bold tracking-tighter uppercase flex items-center gap-2">
       <div className="w-3 h-3 md:w-4 md:h-4 bg-[var(--color-brand-neon)] animate-pulse"></div>
@@ -19,9 +19,9 @@ const Nav = () => (
       <ArrowUpRight size={16} />
     </a>
   </nav>
-);
+));
 
-const Marquee = () => {
+const Marquee = React.memo(() => {
   return (
     <div className="bg-[var(--color-brand-neon)] text-black py-3 overflow-hidden whitespace-nowrap border-y-2 border-black transform -rotate-1 scale-105 relative z-20 mt-10">
       <motion.div 
@@ -34,9 +34,9 @@ const Marquee = () => {
       </motion.div>
     </div>
   );
-};
+});
 
-const Hero = () => {
+const Hero = React.memo(() => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 150]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -47,8 +47,11 @@ const Hero = () => {
         <motion.img 
           style={{ y }}
           src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=industrial%20car%20tire%20close%20up%20studio%20lighting%20dark%20background%20highly%20detailed&image_size=landscape_16_9" 
-          alt="Latar Belakang Ban" 
+          alt="Latar belakang ban mobil industri dengan tekstur detail untuk bengkel SRB Cianjur" 
           className="w-full h-full object-cover object-center grayscale"
+          fetchPriority="high"
+          width="1920"
+          height="1080"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-brand-asphalt)] via-transparent to-transparent"></div>
       </div>
@@ -76,14 +79,14 @@ const Hero = () => {
       </div>
     </section>
   );
-};
+});
 
-const Services = () => {
-  const services = [
+const Services = React.memo(() => {
+  const services = useMemo(() => [
     { title: "Jual Beli Ban", icon: <Wrench size={32} />, desc: "Menyediakan berbagai pilihan ban baru dan bekas (copotan) dengan kondisi 80-95%, harga bersahabat dan kualitas terjamin." },
     { title: "Spooring & Balancing", icon: <Zap size={32} />, desc: "Penyetelan sudut roda (spooring) dan penyeimbangan roda (balancing) presisi tinggi untuk kenyamanan dan keawetan ban. Termasuk isi Nitrogen." },
     { title: "Kanisir Ban", icon: <ShieldAlert size={32} />, desc: "Layanan vulkanisir/kanisir ban profesional untuk memperpanjang umur ban Anda secara ekonomis tanpa mengorbankan keamanan." }
-  ];
+  ], []);
 
   return (
     <section id="services" className="py-20 md:py-32 px-4 md:px-6 relative bg-[var(--color-brand-asphalt)] z-10">
@@ -123,13 +126,13 @@ const Services = () => {
       </div>
     </section>
   );
-};
+});
 
-const Inventory = () => {
-  const tires = [
-    { name: "BAN BARU PREMIUM", type: "Berbagai Merk Tersedia", price: "Hubungi", img: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=sleek%20sports%20car%20tire%20on%20alloy%20wheel%20dark%20background&image_size=square" },
-    { name: "BAN BEKAS COPOTAN", type: "Kondisi 80% - 95%", price: "Mulai Rp 100k", img: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=off%20road%20mud%20tire%20tread%20pattern%20close%20up%20macro%20photography&image_size=square" }
-  ];
+const Inventory = React.memo(() => {
+  const tires = useMemo(() => [
+    { name: "BAN BARU PREMIUM", type: "Berbagai Merk Tersedia", price: "Hubungi", img: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=sleek%20sports%20car%20tire%20on%20alloy%20wheel%20dark%20background&image_size=square", alt: "Katalog ban mobil baru premium di bengkel SRB Cianjur" },
+    { name: "BAN BEKAS COPOTAN", type: "Kondisi 80% - 95%", price: "Mulai Rp 100k", img: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=off%20road%20mud%20tire%20tread%20pattern%20close%20up%20macro%20photography&image_size=square", alt: "Katalog ban mobil bekas copotan murah berkualitas di Cianjur" }
+  ], []);
 
   return (
     <section id="inventory" className="py-20 md:py-32 px-4 md:px-6 bg-[var(--color-brand-concrete)] border-y border-gray-800">
@@ -147,9 +150,17 @@ const Inventory = () => {
               viewport={{ once: true }}
               className="group relative bg-[var(--color-brand-asphalt)] flex flex-col sm:flex-row overflow-hidden border border-gray-800 hover:border-white transition-colors"
             >
-              <div className="w-full sm:w-2/5 md:w-1/2 aspect-square sm:aspect-auto relative overflow-hidden">
+              <div className="w-full sm:w-2/5 md:w-1/2 aspect-square sm:aspect-auto relative overflow-hidden bg-gray-900">
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors z-10 mix-blend-multiply"></div>
-                <img src={tire.img} alt={tire.name} className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
+                <img 
+                  src={tire.img} 
+                  alt={tire.alt} 
+                  className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  width="800"
+                  height="800"
+                  decoding="async"
+                />
               </div>
               <div className="w-full sm:w-3/5 md:w-1/2 p-6 md:p-8 flex flex-col justify-between relative z-20">
                 <div>
@@ -169,9 +180,9 @@ const Inventory = () => {
       </div>
     </section>
   );
-};
+});
 
-const Footer = () => (
+const Footer = React.memo(() => (
   <footer id="contact" className="bg-[var(--color-brand-asphalt)] pt-20 md:pt-32 pb-8 md:pb-12 px-4 md:px-6">
     <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 border-b border-gray-800 pb-12 md:pb-16 mb-8 md:mb-12">
       <div className="lg:col-span-2">
@@ -230,7 +241,7 @@ const Footer = () => (
       </div>
     </div>
   </footer>
-);
+));
 
 function App() {
   return (
@@ -241,12 +252,16 @@ function App() {
       <Services />
       
       {/* Mid-section image breaker */}
-      <section className="h-[30vh] md:h-[40vh] min-h-[300px] md:min-h-[400px] relative overflow-hidden border-y-2 border-[var(--color-brand-neon)]">
+      <section className="h-[30vh] md:h-[40vh] min-h-[300px] md:min-h-[400px] relative overflow-hidden border-y-2 border-[var(--color-brand-neon)] bg-gray-900">
         <div className="absolute inset-0 bg-[var(--color-brand-neon)] mix-blend-color z-10 opacity-20"></div>
         <img 
           src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=mechanic%20working%20on%20car%20tire%20in%20dark%20industrial%20garage%20neon%20lighting&image_size=landscape_16_9" 
-          alt="Bengkel SRB" 
+          alt="Mekanik profesional SRB Ban sedang memperbaiki ban mobil di bengkel Cianjur" 
           className="w-full h-full object-cover object-center grayscale"
+          loading="lazy"
+          width="1920"
+          height="1080"
+          decoding="async"
         />
         <div className="absolute inset-0 flex items-center justify-center z-20 px-4">
           <h2 className="font-[var(--font-display)] text-3xl sm:text-5xl md:text-8xl font-bold uppercase text-white mix-blend-overlay text-center leading-none">
